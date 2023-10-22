@@ -1,22 +1,8 @@
 
-  // se importamos la biblioteca readline para interactuar en la consola la funcion que se desea realizar
-
-const readline = require('readline');
-
-const rl = readline.createInterface({
-
-  input: process.stdin,
-
-  output: process.stdout
+const readlineSync = require("readline-sync") // importamos readline-sync para trabajar el menu y poderseleccionar las funciones en la consola
 
 
-});
-
-
-
-
-
-// la lista de tareas como un array de objetos, tiene tareas prediseñadas
+// la lista de tareas como un array de objetos, agrege algunas tareas prediseñadas
 let arrayListaTareas = [
 
   {id: 1, descripcion: "tomar 200 listros de agua", estado: "no completada"}, 
@@ -61,23 +47,24 @@ const mostrarTareas = () => {
 
 // funcion para agregar uan nueva tarea
 
-const agregarTarea = (descripcion) => {
+const agregarTarea = () => {
+
+  let nuevaDescripcion = readlineSync.question("introduce la descripcion de la tarea: ")
 
 
-  const nuevaTarea = {
+  arrayListaTareas.push ({
 
     id: arrayListaTareas.length + 1,
 
-    descripcion: descripcion,
+    descripcion: nuevaDescripcion,
 
     estado: "no completada"
 
 
-  };
+  });
 
-  arrayListaTareas.push (nuevaTarea);
 
-  console.log(`se agrego la tarea: ${descripcion}`);
+  console.log(`se agrego la tarea: ${nuevaDescripcion}`);
 
 
 };
@@ -90,37 +77,24 @@ const agregarTarea = (descripcion) => {
 //funcion para eliminar tareas
 
 
-const eliminarTarea = (id) => {
+const eliminarTarea = () => {
 
-  let tareaEliminada = false;
+  let tareaId = arrayListaTareas.map(tarea => tarea.id.toString()); 
 
-  for (let i = 0; i < arrayListaTareas.length; i++) {
-
-    if (arrayListaTareas[i].id === id) {
+  let indice = readlineSync.keyInSelect(tareaId, "selecciona la tarea que quieres eliminar");
 
 
-      arrayListaTareas.splice(i, 1);
+  if (indice >= 0) {
 
-      tareaEliminada = true;
+    console.log(`la tarea ${arrayListaTareas[indice].id} fue eliminada`);
 
-      console.log(`tarea ${id} eliminada`);
+    arrayListaTareas.splice(indice, 1);
 
-
-      break;
-
-
-    }
 
   }
 
-  if (!tareaEliminada) {
-
-    console.log(`no se encontro la tarea con el id: ${id}`);
-
-  }
 
 };
-
 
 
 
@@ -129,26 +103,23 @@ const eliminarTarea = (id) => {
 
 // funcion cambiar el estado de las tareas
 
-const tareaYaCompletada = (id) => {
+const tareaYaCompletada = () => {
 
-  for (let tarea of arrayListaTareas) {
+  let tareaId = arrayListaTareas.map(tarea => tarea.id.toString()); 
 
-    if (tarea.id === id) {
-
-
-      tarea.estado = "completada";
-
-      console.log(`tarea ${id} completada`);
-
-      return;
+  let indice = readlineSync.keyInSelect(tareaId, "selecciona la tarea que quieres completar");
 
 
+  if (indice >= 0) {
 
-    }
+    arrayListaTareas[indice].estado = "completada";
+
+    console.log(`Tarea ${arrayListaTareas[indice].id} completada`);
+
+
 
   }
 
-  console.log(`la tarea con el id ${id} no existe`);
 
 
 };
@@ -159,88 +130,62 @@ const tareaYaCompletada = (id) => {
 
 
 
-
-// loop para el menu en consola
-
-const menuApp = () => {
+// implementacion del menu con readline-sync
 
 
+while (true) {
 
-  rl.question("elige una opcion (mostrar, agregar, eliminar, completar, salir): ", (opcion) => {
-    
-    console.log(`seleccionaste la opcion: ${opcion}`);
+  const opciones = ["mostrar", "agregar", "eliminar", "completar", "salir"];
+
+  let indice = readlineSync.keyInSelect(opciones, "elige una opcion: ");
 
 
 
-    if (opcion === "mostrar") {
+  if (indice === 0) {
 
-      mostrarTareas();
-      menuApp();
+    console.log("selecionaste la opcion mostrar");
 
-    
-
-    } else if (opcion === "agregar") {
-
-      rl.question("introduce la descripcion de la nueva tarea: ", (descripcion) => {
-
-        agregarTarea(descripcion);
-
-        menuApp();
-
-      });
-
-    
-
-    } else if (opcion === "eliminar") {
-
-      rl.question("introduce el id de la tarea que se eliminara: ", (id) => {
-
-        eliminarTarea(Number(id));
-
-        menuApp();
+    mostrarTareas();
 
 
-      });
+  } else if (indice === 1) {
+
+    console.log("selecionaste la opcion agregar");
+
+    agregarTarea();
 
 
-    } else if (opcion === "completar") {
+  } else if (indice === 2) {
 
-      rl.question("introduce el id de la tare que se completara: ", (id) => {
+    console.log("selecionaste la opcion eliminar");
 
-        tareaYaCompletada(Number(id));
+    eliminarTarea();
 
-        menuApp();
 
-      });
+  } else if (indice === 3) {
 
-    
+    console.log("selecionaste la opcion completar");
 
-    } else if (opcion === "salir") {
+    tareaYaCompletada();
 
-      console.log("aplicacion finalizada");
 
-      rl.close();
+  } else if (indice === 4) {
+
+    console.log("la aplicacion finalizo");
+
+    break;
+
+
+  } else {
+
+    console.log("opcion cancelada o no reconocida");
+
+
+  }
 
 
 
-    } else {
-
-      console.log("opcion no reconocida"); 
-
-      menuApp();
-
-    }
-
-  });
-
-
-};
-
-
-
-menuApp();
-
-
+}
 
 
 
