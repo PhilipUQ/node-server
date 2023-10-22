@@ -194,10 +194,5 @@ while (true) {
 
 // se inicia la aplicacion tipeando en la consola: npm run start
 
-// se selecciona la funcion que se desea ejecutar: 
+// se selecciona la funcion que se desea ejecutar
 
-// mostrar: imprimir la lista de tareas
-// agregar: agregar una tarea
-// eliminar: eliminar una tarea
-// completar: cambiar el estado de la tarea
-// salir: cerrar la aplicaion
