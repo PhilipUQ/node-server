@@ -45,11 +45,15 @@ const mostrarTareas = () => {
 
 
 
-// funcion para agregar uan nueva tarea
+// funcion para agregar uan nueva tarea, retornando una promesa
 
 const agregarTarea = () => {
 
-  let nuevaDescripcion = readlineSync.question("introduce la descripcion de la tarea: ")
+  return new Promise((resolve, reject) => {
+
+    //setTimeout(() => {
+
+    let nuevaDescripcion = readlineSync.question("introduce la descripcion de la tarea: ")
 
 
   arrayListaTareas.push ({
@@ -64,8 +68,16 @@ const agregarTarea = () => {
   });
 
 
-  console.log(`se agrego la tarea: ${nuevaDescripcion}`);
+  resolve(`se agrego la tarea: ${nuevaDescripcion}`);
 
+
+  //}, 2000); // espera 2 segundos para resolver la promesa
+
+
+
+  }); 
+
+  
 
 };
 
@@ -74,25 +86,43 @@ const agregarTarea = () => {
 
 
 
-//funcion para eliminar tareas
+//funcion para eliminar tareas, retornando una promesa
 
 
 const eliminarTarea = () => {
 
-  let tareaId = arrayListaTareas.map(tarea => tarea.id.toString()); 
+  //setTimeout(() => {
+
+  return new Promise((resolve, reject) => {
+
+
+    let tareaId = arrayListaTareas.map(tarea => tarea.id.toString()); 
 
   let indice = readlineSync.keyInSelect(tareaId, "selecciona la tarea que quieres eliminar");
 
 
   if (indice >= 0) {
 
-    console.log(`la tarea ${arrayListaTareas[indice].id} fue eliminada`);
 
     arrayListaTareas.splice(indice, 1);
+
+    resolve(`la tarea ${arrayListaTareas[indice].id} fue eliminada`);
+
+
+  } else {
+
+    reject(`error al eliminar la tarea`);
 
 
   }
 
+  //}, 2000); // espera 2 segundos para resolver la promesa
+
+
+
+  });
+
+  
 
 };
 
@@ -101,9 +131,13 @@ const eliminarTarea = () => {
 
 
 
-// funcion cambiar el estado de las tareas
+// funcion cambiar el estado de las tareas, retornando una promesa
 
 const tareaYaCompletada = () => {
+
+  return new Promise((resolve, reject) => {
+
+  //setTimeout(() => {
 
   let tareaId = arrayListaTareas.map(tarea => tarea.id.toString()); 
 
@@ -114,11 +148,20 @@ const tareaYaCompletada = () => {
 
     arrayListaTareas[indice].estado = "completada";
 
-    console.log(`Tarea ${arrayListaTareas[indice].id} completada`);
+
+    resolve(`Tarea ${arrayListaTareas[indice].id} completada`);
 
 
+  } else {
+
+    reject(`error al completar la tarea`);
 
   }
+  
+
+  //}, 2000); // espera 2 segundos para resolver la promesa
+
+});
 
 
 
@@ -130,62 +173,186 @@ const tareaYaCompletada = () => {
 
 
 
-// implementacion del menu con readline-sync
+/* // implementacion del menu con readline-sync usando metodo async & await
 
 
-while (true) {
-
-  const opciones = ["mostrar", "agregar", "eliminar", "completar", "salir"];
-
-  let indice = readlineSync.keyInSelect(opciones, "elige una opcion: ");
+const menuConsola = async () => {
 
 
+  while (true) {
 
-  if (indice === 0) {
+    const opciones = ["mostrar", "agregar", "eliminar", "completar", "salir"];
+  
+    let indice = readlineSync.keyInSelect(opciones, "elige una opcion: ");
 
-    console.log("selecionaste la opcion mostrar");
+    try {
 
-    mostrarTareas();
+      
+    if (indice === 0) {
+  
+      console.log("selecionaste la opcion mostrar");
+  
+      mostrarTareas();
+  
+  
+    } else if (indice === 1) {
+  
+      console.log("selecionaste la opcion agregar");
+  
+      await agregarTarea();
+
+  
+  
+    } else if (indice === 2) {
+  
+      console.log("selecionaste la opcion eliminar");
+  
+      await eliminarTarea();
+
+  
+  
+    } else if (indice === 3) {
+  
+      console.log("selecionaste la opcion completar");
+  
+      await tareaYaCompletada();
+
+      console.log(asincrono);
+  
+  
+    } else if (indice === 4) {
+  
+      console.log("la aplicacion finalizo");
+  
+      break;
+  
+  
+    } else {
+  
+      console.log("opcion cancelada o no reconocida");
+  
+  
+    } 
 
 
-  } else if (indice === 1) {
 
-    console.log("selecionaste la opcion agregar");
-
-    agregarTarea();
+    } catch (error) { 
 
 
-  } else if (indice === 2) {
-
-    console.log("selecionaste la opcion eliminar");
-
-    eliminarTarea();
+      console.log("algo salio mal:", error)
 
 
-  } else if (indice === 3) {
-
-    console.log("selecionaste la opcion completar");
-
-    tareaYaCompletada();
-
-
-  } else if (indice === 4) {
-
-    console.log("la aplicacion finalizo");
-
-    break;
-
-
-  } else {
-
-    console.log("opcion cancelada o no reconocida");
-
-
+    }
+  
+  
+  
+  
+  
+  
   }
 
 
 
-}
+
+  
+};
+
+
+menuConsola(); */
+
+
+
+
+// implementacion del menu usando el metodo then()
+
+
+
+const menuConsola = () => {
+
+
+  while (true) {
+
+    const opciones = ["mostrar", "agregar", "eliminar", "completar", "salir"];
+  
+    let indice = readlineSync.keyInSelect(opciones, "elige una opcion: ");
+
+    
+
+      
+    if (indice === 0) {
+  
+      console.log("selecionaste la opcion mostrar");
+  
+      mostrarTareas();
+  
+  
+    } else if (indice === 1) {
+  
+      console.log("selecionaste la opcion agregar");
+  
+      agregarTarea().then(() => {
+
+        console.log("la tarea se termino de agregar");
+
+      });
+
+  
+  
+    } else if (indice === 2) {
+  
+      console.log("selecionaste la opcion eliminar");
+  
+      eliminarTarea().then(() => {
+
+        console.log("la tarea termino de eliminarse");
+
+
+      });
+
+  
+  
+    } else if (indice === 3) {
+  
+      console.log("selecionaste la opcion completar");
+  
+      tareaYaCompletada().then(() => {
+
+        console.log("la tarea se termino de completarse");
+
+      });
+
+      
+  
+  
+    } else if (indice === 4) {
+  
+      console.log("la aplicacion finalizo");
+  
+      break;
+  
+  
+    } else {
+  
+      console.log("opcion cancelada o no reconocida");
+  
+  
+    } 
+
+
+
+
+    }
+  
+
+  
+  
+  
+  };
+
+
+
+
+menuConsola();
 
 
 
